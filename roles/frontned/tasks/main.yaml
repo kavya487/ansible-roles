@@ -9,6 +9,8 @@
       state: started
       enabled: yes
   - name: inclusde common role
+    tags:
+    - deployment
     include_role:
       name: common
       tasks_from: main
