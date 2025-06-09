@@ -1,0 +1,40 @@
+- name: configure mysql sevrer
+  hosts: mysql
+  become: yes
+  vars: 
+    mysql_root_password: ExpenseApp@1
+  tasks:
+  - name: install mysql server
+    ansible.builtin.package:
+      name: mysql-server
+      state: installed
+
+  - name: start and enable mysql server
+    ansible.builtin.service:
+      name: mysqld
+      state: started
+      enabled: yes
+
+  - name: install mysql  librart
+    ansible.builtin.pip:
+      name: "{{ item }}"
+      executable: pip3.9
+    loop:
+    - PyMySQL
+    - cryptography
+
+  - name: connect to my sql server
+    community.mysql.mysql_info:
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      login_host: mysql.kavyadev.shop
+    register: mysql_info
+    ignore_errors: true
+
+  - name: print ec2_info
+    ansible.builtin.debug:
+      msg: print the o/p {{ mysql_info }}
+
+  - name: set up the password
+    ansible.builtin.command: " mysql_secure_installation --set-root-pass {{  mysql_root_password }}  "
+    when: mysql_info. failed is true
