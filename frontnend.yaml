@@ -1,0 +1,5 @@
+- name: confiure frontrned server
+  hosts: frontend
+  become: yes
+  roles:
+  - frontend
